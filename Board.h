@@ -11,6 +11,12 @@ public:
     void set_field(int, int, Figure);
     Figure* get_field(int, int);
 
+    void move(int, int, int, int);
+
+    void announce(int, int, int, int);
+    void take(int, int);
+    bool isFree(int, int);
+
     void print_board()const;
     void print_taken()const;
 

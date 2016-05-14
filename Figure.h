@@ -15,6 +15,8 @@ public:
 	Figure& operator=(const Figure&);
 	~Figure();
 
+	bool operator==(char const*) const;
+
 	void setColor(bool);
 	void setName(char const*);
 
@@ -22,6 +24,7 @@ public:
 	FigureColor getColor() const;
 
     void print()const;
+
 	//virtual void move() = 0;
 	//Can't use Figure class in Board class because of virtual function ?
 private:

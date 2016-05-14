@@ -1,5 +1,6 @@
 #include "Figure.h"
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 
@@ -32,6 +33,11 @@ Figure::~Figure()
 	erase();
 }
 
+bool Figure::operator==(char const* str) const
+{
+    return !strcmp(name,str);
+}
+
 void Figure::setColor(bool other)
 {
 	this->color = other;
@@ -57,7 +63,7 @@ FigureColor Figure::getColor() const
 
 void Figure::print() const
 {
-    if (strcmp(name,"Free"))
+    if (!(*this=="Free"))
     {
         if (color.isWhite())
         cout << "W " << name;
