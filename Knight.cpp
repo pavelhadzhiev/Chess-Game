@@ -33,6 +33,8 @@ void Knight::move(int row, int col, int newRow, int newCol, Board& chess)
         }
         if (flag)
         {
+            if (chess.get_field(row,col)->getColor().isWhite()) cout << "W ";
+            else cout << "B ";
             chess.set_field(newRow,newCol,*this);
             chess.get_field(row,col)->setName("Free");
             cout << "Knight from "; chess.announce(row,col,newRow,newCol);
