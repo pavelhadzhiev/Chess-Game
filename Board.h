@@ -21,6 +21,9 @@ public:
     void print_taken()const;
 
     void start();
+
+    void game();
+    bool ended();
 };
 
 #endif // BOARD_H_INCLUDED

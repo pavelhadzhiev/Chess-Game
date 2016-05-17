@@ -21,7 +21,7 @@ void Pawn::move(int row, int col, int newRow, int newCol, Board& chess)
             chess.get_field(row,col)->setName("Free");
             cout << "Pawn from "; chess.announce(row,col,newRow,newCol);
         }
-        else if(row+1==newRow && (col+1==newCol || col-1==newCol) && !chess.isFree(newRow,newCol))
+        else if(row+1==newRow && (col+1==newCol || col-1==newCol) && !chess.isFree(newRow,newCol) && chess.get_field(newRow,newCol)->getColor().isWhite() == false)
         {
             chess.take(newRow,newCol);
             chess.set_field(newRow,newCol,*this);
@@ -45,7 +45,7 @@ void Pawn::move(int row, int col, int newRow, int newCol, Board& chess)
             chess.get_field(row,col)->setName("Free");
             cout << "Pawn from "; chess.announce(row,col,newRow,newCol);
         }
-        else if(row-1==newRow && (col+1==newCol || col-1==newCol) && !chess.isFree(newRow,newCol))
+        else if(row-1==newRow && (col+1==newCol || col-1==newCol) && !chess.isFree(newRow,newCol) && chess.get_field(newRow,newCol)->getColor().isWhite() == true)
         {
             chess.take(newRow,newCol);
             chess.set_field(newRow,newCol,*this);

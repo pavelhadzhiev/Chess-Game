@@ -38,14 +38,14 @@ void Board::print_board()const
 {
     for (int row=7; row>=0; row--)
     {
-        cout << endl << endl << endl << endl;
+        cout << endl << endl << endl << endl << endl << endl;
         cout << " " << row + 1 << "    ";
         for (int col=0; col<8; col++)
         {
             board[row][col].print();
             cout << " ";
             if(board[row][col]=="Free")
-            cout << "        ";
+            cout << "   .    ";
         }
     }
     cout << endl << endl << endl;
@@ -65,6 +65,7 @@ void Board::print_taken()const
             cout << endl;
         }
     }
+    cout << endl;
 }
 
 void Board::start()
@@ -109,18 +110,17 @@ bool Board::isFree(int row, int col)
 void Board::move(int row, int col, int newRow, int newCol)
 {
     Figure toMove = *get_field(row, col);
-    while (row<0 || row>7 || col<0 || col>7 || newRow<0 || newRow>7 || newCol<0 || newCol>7 || toMove=="Free")
+    if (row<0 || row>7 || col<0 || col>7 || newRow<0 || newRow>7 || newCol<0 || newCol>7 || toMove=="Free" || (row==newRow && col==newCol))
+        cout << "Illegal move. No action taken." << endl;
+    else
     {
-        cout << "Invalid coordinates. Enter valid input: ";
-        cin >> row >> col >> newRow >> newCol;
-        if (row>=0 && row<8 && col>=0 && col<=8 && newRow>=0 && newRow<8 && newCol>=0 && newCol<8) toMove = *get_field(row, col);
+        if (toMove=="King  ") {King king(toMove.getColor().isWhite()); king.move(row,col,newRow,newCol,*this);}
+        if (toMove=="Queen ") {Queen queen(toMove.getColor().isWhite()); queen.move(row,col,newRow,newCol,*this);}
+        if (toMove=="Bishop") {Bishop bishop(toMove.getColor().isWhite()); bishop.move(row,col,newRow,newCol,*this);}
+        if (toMove=="Knight") {Knight knight(toMove.getColor().isWhite()); knight.move(row,col,newRow,newCol,*this);}
+        if (toMove=="Rook  ") {Rook rook(toMove.getColor().isWhite()); rook.move(row,col,newRow,newCol,*this);}
+        if (toMove=="Pawn  ") {Pawn pawn(toMove.getColor().isWhite()); pawn.move(row,col,newRow,newCol,*this);}
     }
-    if (toMove=="King  ") {King king(toMove.getColor().isWhite()); king.move(row,col,newRow,newCol,*this);}
-    if (toMove=="Queen ") {Queen queen(toMove.getColor().isWhite()); queen.move(row,col,newRow,newCol,*this);}
-    if (toMove=="Bishop") {Bishop bishop(toMove.getColor().isWhite()); bishop.move(row,col,newRow,newCol,*this);}
-    if (toMove=="Knight") {Knight knight(toMove.getColor().isWhite()); knight.move(row,col,newRow,newCol,*this);}
-    if (toMove=="Rook  ") {Rook rook(toMove.getColor().isWhite()); rook.move(row,col,newRow,newCol,*this);}
-    if (toMove=="Pawn  ") {Pawn pawn(toMove.getColor().isWhite()); pawn.move(row,col,newRow,newCol,*this);}
 }
 
 void Board::announce(int row, int col, int newRow, int newCol)
@@ -168,4 +168,76 @@ void Board::take(int row, int col)
         }
     }
     board[row][col].setName("Free");
+}
+
+void Board::game()
+{
+    cout << "Game started." << endl << "Enter moves like this: 'A2 A3' or 'a2 a3'. " << endl << "Enter 'A0 A0' to end game. " << endl;
+    start();
+    print_board();
+    char x1, x2;
+    int row, col, newRow, newCol;
+    while (!ended())
+    {
+        cin >> x1 >> row >> x2 >> newRow;
+        if ((x1 == 'a' || x1 == 'A') && (x2 == 'a' || x2 == 'A') && row == 0 && newRow == 0)
+            break;
+        row--;
+        newRow--;
+        switch(x1)
+        {
+            case 'a': col = 0;break;
+            case 'b': col = 1;break;
+            case 'c': col = 2;break;
+            case 'd': col = 3;break;
+            case 'e': col = 4;break;
+            case 'f': col = 5;break;
+            case 'g': col = 6;break;
+            case 'h': col = 7;break;
+            case 'A': col = 0;break;
+            case 'B': col = 1;break;
+            case 'C': col = 2;break;
+            case 'D': col = 3;break;
+            case 'E': col = 4;break;
+            case 'F': col = 5;break;
+            case 'G': col = 6;break;
+            case 'H': col = 7;break;
+        }
+        switch(x2)
+        {
+            case 'a': newCol = 0;break;
+            case 'b': newCol = 1;break;
+            case 'c': newCol = 2;break;
+            case 'd': newCol = 3;break;
+            case 'e': newCol = 4;break;
+            case 'f': newCol = 5;break;
+            case 'g': newCol = 6;break;
+            case 'h': newCol = 7;break;
+            case 'A': newCol = 0;break;
+            case 'B': newCol = 1;break;
+            case 'C': newCol = 2;break;
+            case 'D': newCol = 3;break;
+            case 'E': newCol = 4;break;
+            case 'F': newCol = 5;break;
+            case 'G': newCol = 6;break;
+            case 'H': newCol = 7;break;
+        }
+        move(row,col,newRow,newCol);
+        print_board();
+        print_taken();
+    }
+    cout << "Game ended. " << endl;
+}
+
+bool Board::ended()
+{
+    for (int row=7; row>=0; row--)
+    {
+        for (int col=8; col<12; col++)
+        {
+            if (board[row][col] == "King  ")
+            return true;
+        }
+    }
+    return false;
 }
