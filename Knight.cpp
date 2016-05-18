@@ -9,7 +9,7 @@ Knight::Knight(FigureColor color) :Figure("Knight", color){}
 void Knight::move(int row, int col, int newRow, int newCol, Board& chess)
 {
     bool flag = true;
-    if((row - newRow != col - newCol) && (row - newRow != newCol - col))
+    if(row - newRow != col - newCol && row - newRow != newCol - col)
         cout << "Illegal move. No action taken." << endl;
     else
     {
