@@ -7,7 +7,8 @@ class Rook : public Figure
 {
 public:
     Rook(FigureColor = 1);
-	void move(int, int, int, int, Board&);
+	bool move(int, int, int, int, Board&);
+	bool canAttack(int, int, int, int, Board&);
 };
 
 #endif // ROOK_H_INCLUDED

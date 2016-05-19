@@ -24,9 +24,8 @@ public:
 	FigureColor getColor() const;
 
     void print()const;
-
+    bool unmoved;
 	//virtual void move() = 0;
-	//Can't use Figure class in Board class because of virtual function ?
 private:
 	char* name;
 	FigureColor color;

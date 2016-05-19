@@ -7,7 +7,8 @@ class Bishop : public Figure
 {
 public:
     Bishop(FigureColor = 1);
-	void move(int, int, int, int, Board&);
+	bool move(int, int, int, int, Board&);
+	bool canAttack(int, int, int, int, Board&);
 };
 
 #endif // BISHOP_H_INCLUDED

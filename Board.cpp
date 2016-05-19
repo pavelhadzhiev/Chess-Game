@@ -55,14 +55,17 @@ void Board::print_board()const
 
 void Board::print_taken()const
 {
+    bool flag = true;
     cout << "Taken figures: " << endl;
-    for (int row=7; row>=0; row--)
+    for (int col=8; col<12 && flag; col++)
     {
-        for (int col=8; col<12; col++)
+        for (int row=7; row>=0 && flag; row--)
         {
             board[row][col].print();
             if (!(board[row][col]=="Free"))
-            cout << endl;
+                cout << endl;
+            else
+                flag = false;
         }
     }
     cout << endl;
@@ -76,6 +79,8 @@ void Board::start()
     Bishop white_bishop(1), black_bishop(0);
     Queen white_queen(1), black_queen(0);
     King white_king(1), black_king(0);
+    white_king.unmoved = true;
+    black_king.unmoved = true;
 
     for (int col=0; col<8; col++)
     {
@@ -100,6 +105,13 @@ void Board::start()
 
     board[7][4] = black_king  ;
     board[0][4] = white_king  ;
+
+    board[7][4].unmoved = true;
+    board[0][4].unmoved = true;
+    board[7][7].unmoved = true;
+    board[0][7].unmoved = true;
+    board[7][0].unmoved = true;
+    board[0][0].unmoved = true;
 }
 
 bool Board::isFree(int row, int col)
@@ -107,19 +119,22 @@ bool Board::isFree(int row, int col)
     return *get_field(row,col)=="Free";
 }
 
-void Board::move(int row, int col, int newRow, int newCol)
+bool Board::move(int row, int col, int newRow, int newCol)
 {
     Figure toMove = *get_field(row, col);
     if (row<0 || row>7 || col<0 || col>7 || newRow<0 || newRow>7 || newCol<0 || newCol>7 || toMove=="Free" || (row==newRow && col==newCol))
+    {
         cout << "Illegal move. No action taken." << endl;
+        return false;
+    }
     else
     {
-        if (toMove=="King  ") {King king(toMove.getColor().isWhite()); king.move(row,col,newRow,newCol,*this);}
-        if (toMove=="Queen ") {Queen queen(toMove.getColor().isWhite()); queen.move(row,col,newRow,newCol,*this);}
-        if (toMove=="Bishop") {Bishop bishop(toMove.getColor().isWhite()); bishop.move(row,col,newRow,newCol,*this);}
-        if (toMove=="Knight") {Knight knight(toMove.getColor().isWhite()); knight.move(row,col,newRow,newCol,*this);}
-        if (toMove=="Rook  ") {Rook rook(toMove.getColor().isWhite()); rook.move(row,col,newRow,newCol,*this);}
-        if (toMove=="Pawn  ") {Pawn pawn(toMove.getColor().isWhite()); pawn.move(row,col,newRow,newCol,*this);}
+        if (toMove=="King  ") {King king(toMove.getColor().isWhite()); return king.move(row,col,newRow,newCol,*this);}
+        if (toMove=="Queen ") {Queen queen(toMove.getColor().isWhite()); return queen.move(row,col,newRow,newCol,*this);}
+        if (toMove=="Bishop") {Bishop bishop(toMove.getColor().isWhite()); return bishop.move(row,col,newRow,newCol,*this);}
+        if (toMove=="Knight") {Knight knight(toMove.getColor().isWhite()); return knight.move(row,col,newRow,newCol,*this);}
+        if (toMove=="Rook  ") {Rook rook(toMove.getColor().isWhite()); return rook.move(row,col,newRow,newCol,*this);}
+        if (toMove=="Pawn  ") {Pawn pawn(toMove.getColor().isWhite()); return pawn.move(row,col,newRow,newCol,*this);}
     }
 }
 
@@ -222,9 +237,11 @@ void Board::game()
             case 'G': newCol = 6;break;
             case 'H': newCol = 7;break;
         }
-        move(row,col,newRow,newCol);
-        print_board();
-        print_taken();
+        if (move(row,col,newRow,newCol))
+        {
+            print_board();
+            print_taken();
+        }
     }
     cout << "Game ended. " << endl;
 }
@@ -236,8 +253,35 @@ bool Board::ended()
         for (int col=8; col<12; col++)
         {
             if (board[row][col] == "King  ")
-            return true;
+            {
+                if (board[row][col].getColor().isWhite())
+                    cout << "Black wins. " << endl;
+                if (!board[row][col].getColor().isWhite())
+                    cout << "White wins. " << endl;
+                return true;
+            }
         }
     }
     return false;
+}
+
+bool Board::isAttacked(int newRow, int newCol, bool white)
+{
+    bool flag = false;
+    for (int i=0; i<8 && !flag; i++)
+    {
+        for (int j=0; j<8 && !flag; j++)
+        {
+            if (board[i][j].getColor().isWhite() == white)
+            {
+                if (board[i][j]=="King  ") {King king(board[i][j].getColor().isWhite()); flag = king.canAttack(i,j,newRow,newCol,*this);}
+                if (board[i][j]=="Queen ") {Queen queen(board[i][j].getColor().isWhite()); flag = queen.canAttack(i,j,newRow,newCol,*this);}
+                if (board[i][j]=="Bishop") {Bishop bishop(board[i][j].getColor().isWhite()); flag = bishop.canAttack(i,j,newRow,newCol,*this);}
+                if (board[i][j]=="Knight") {Knight knight(board[i][j].getColor().isWhite()); flag = knight.canAttack(i,j,newRow,newCol,*this);}
+                if (board[i][j]=="Rook  ") {Rook rook(board[i][j].getColor().isWhite()); flag = rook.canAttack(i,j,newRow,newCol,*this);}
+                if (board[i][j]=="Pawn  ") {Pawn pawn(board[i][j].getColor().isWhite()); flag = pawn.canAttack(i,j,newRow,newCol,*this);}
+            }
+        }
+    }
+    return flag;
 }

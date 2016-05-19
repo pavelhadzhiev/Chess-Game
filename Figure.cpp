@@ -10,6 +10,7 @@ Figure::Figure(char const *name, FigureColor color)
 	assert(this->name != NULL);
 	strcpy(this->name, name);
 	this->color = color;
+	unmoved = false;
 }
 
 Figure::Figure(const Figure &other)
@@ -17,7 +18,7 @@ Figure::Figure(const Figure &other)
 	copy(other);
 }
 
-Figure & Figure::operator=(const Figure &other)
+Figure& Figure::operator=(const Figure &other)
 {
 	if (this != &other)
 	{
@@ -25,7 +26,6 @@ Figure & Figure::operator=(const Figure &other)
 		copy(other);
 	}
 	return *this;
-	// TODO: insert return statement here
 }
 
 Figure::~Figure()

@@ -5,7 +5,7 @@ using namespace std;
 
 Pawn::Pawn(FigureColor color) :Figure("Pawn  ", color){}
 
-void Pawn::move(int row, int col, int newRow, int newCol, Board& chess)
+bool Pawn::move(int row, int col, int newRow, int newCol, Board& chess)
 {
     if (this->getColor().isWhite())
     {
@@ -14,15 +14,18 @@ void Pawn::move(int row, int col, int newRow, int newCol, Board& chess)
             chess.set_field(newRow,newCol,*this);
             chess.get_field(row,col)->setName("Free");
             cout << "W Pawn from "; chess.announce(row,col,newRow,newCol);
+            return true;
         }
-        else if(row+1==newRow && (col+1==newCol || col-1==newCol) && !chess.isFree(newRow,newCol) && chess.get_field(newRow,newCol)->getColor().isWhite() == false)
+        if(row+1==newRow && (col+1==newCol || col-1==newCol) && !chess.isFree(newRow,newCol) && chess.get_field(newRow,newCol)->getColor().isWhite() == false)
         {
             chess.take(newRow,newCol);
             chess.set_field(newRow,newCol,*this);
             chess.get_field(row,col)->setName("Free");
             cout << "W Pawn from "; chess.announce(row,col,newRow,newCol);
+            return true;
         }
-        else cout << "Illegal move. No action taken." << endl;
+        cout << "Illegal move. No action taken." << endl;
+        return false;
     }
 
     else
@@ -32,6 +35,7 @@ void Pawn::move(int row, int col, int newRow, int newCol, Board& chess)
             chess.set_field(newRow,newCol,*this);
             chess.get_field(row,col)->setName("Free");
             cout << "B Pawn from "; chess.announce(row,col,newRow,newCol);
+            return true;
         }
         else if(row-1==newRow && (col+1==newCol || col-1==newCol) && !chess.isFree(newRow,newCol) && chess.get_field(newRow,newCol)->getColor().isWhite() == true)
         {
@@ -39,7 +43,17 @@ void Pawn::move(int row, int col, int newRow, int newCol, Board& chess)
             chess.set_field(newRow,newCol,*this);
             chess.get_field(row,col)->setName("Free");
             cout << "B Pawn from "; chess.announce(row,col,newRow,newCol);
+            return true;
         }
-        else cout << "Illegal move. No action taken." << endl;
+        cout << "Illegal move. No action taken." << endl;
+        return false;
     }
+}
+
+bool Pawn::canAttack(int row, int col, int newRow, int newCol, Board& chess)
+{
+    if((row-1==newRow && (col+1==newCol || col-1==newCol) && !chess.isFree(newRow,newCol) && chess.get_field(newRow,newCol)->getColor().isWhite() == true)
+    ||(row+1==newRow && (col+1==newCol || col-1==newCol) && !chess.isFree(newRow,newCol) && chess.get_field(newRow,newCol)->getColor().isWhite() == false))
+        return true;
+    return false;
 }
